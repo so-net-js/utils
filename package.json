@@ -1,6 +1,6 @@
 {
-  "name"        : "@sv/utils",
-  "version"     : "0.0.0",
+  "name"        : "@svjs/utils",
+  "version"     : "1.0.0",
   "description" : "Utils",
   "main"        : "./dist/index.js",
   "author"      : "SonyaHon <volkov030@gmail.com>",
