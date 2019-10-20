@@ -15,6 +15,17 @@ var _async = _interopRequireDefault(require("./async"));
 
 var _utils = _interopRequireDefault(require("./utils"));
 
+var o = {
+  x: 1,
+  y: 2,
+  z: 3
+};
+
+var res = _utils["default"].iterateSync(o, function (val, idx) {
+  console.log('Entry:', val, idx);
+});
+
+console.log(res);
 var _default = {
   math: _math["default"],
   id: _id["default"],
