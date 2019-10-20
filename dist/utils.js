@@ -319,16 +319,23 @@ function iterateSync(target, callback, accumulate) {
       var idx = i;
       var value = target[i];
       var key = idx;
+      var shouldStop = false;
 
       var setKey = function setKey(newKey) {
         key = newKey;
       };
 
-      var res = callback(value, idx, setKey);
+      var stopExecution = function stopExecution() {
+        shouldStop = true;
+      };
+
+      var res = callback(value, idx, setKey, stopExecution);
 
       if (accumulate) {
         accumulate[key] = res;
       }
+
+      if (shouldStop) return accumulate;
     }
   } else {
     var keys = Object.keys(target);
@@ -337,12 +344,17 @@ function iterateSync(target, callback, accumulate) {
       var _idx = keys[_i];
       var _value = target[_idx];
       var _key = _idx;
+      var _shouldStop = false;
 
       var _setKey = function _setKey(newKey) {
         _key = newKey;
       };
 
-      var _res = callback(_value, _idx, _setKey);
+      var _stopExecution = function _stopExecution() {
+        _shouldStop = true;
+      };
+
+      var _res = callback(_value, _idx, _setKey, _stopExecution);
 
       if (accumulate) {
         if (Array.isArray(accumulate)) {
@@ -351,6 +363,8 @@ function iterateSync(target, callback, accumulate) {
           accumulate[_key] = _res;
         }
       }
+
+      if (_shouldStop) return accumulate;
     }
   }
 
@@ -365,7 +379,7 @@ function _iterateAsync() {
   _iterateAsync = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(target, callback, accumulate) {
-    var i, idx, value, key, setKey, res, keys, _i2, _idx2, _value2, _key2, _setKey2, _res2;
+    var i, idx, value, key, shouldStop, setKey, stopExecution, res, keys, _i2, _idx2, _value2, _shouldStop2, _key2, _setKey2, _stopExecution2, _res2;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
@@ -380,7 +394,7 @@ function _iterateAsync() {
 
           case 2:
             if (!Array.isArray(target)) {
-              _context.next = 18;
+              _context.next = 22;
               break;
             }
 
@@ -388,59 +402,76 @@ function _iterateAsync() {
 
           case 4:
             if (!(i < target.length)) {
-              _context.next = 16;
+              _context.next = 20;
               break;
             }
 
             idx = i;
             value = target[i];
             key = idx;
+            shouldStop = false;
 
             setKey = function setKey(newKey) {
               key = newKey;
             };
 
-            _context.next = 11;
-            return callback(value, idx, setKey);
+            stopExecution = function stopExecution() {
+              shouldStop = true;
+            };
 
-          case 11:
+            _context.next = 13;
+            return callback(value, idx, setKey, stopExecution);
+
+          case 13:
             res = _context.sent;
 
             if (accumulate) {
               accumulate[key] = res;
             }
 
-          case 13:
+            if (!shouldStop) {
+              _context.next = 17;
+              break;
+            }
+
+            return _context.abrupt("return", accumulate);
+
+          case 17:
             i++;
             _context.next = 4;
             break;
 
-          case 16:
-            _context.next = 32;
+          case 20:
+            _context.next = 40;
             break;
 
-          case 18:
+          case 22:
             keys = Object.keys(target);
             _i2 = 0;
 
-          case 20:
+          case 24:
             if (!(_i2 < keys.length)) {
-              _context.next = 32;
+              _context.next = 40;
               break;
             }
 
             _idx2 = keys[_i2];
             _value2 = target[_idx2];
+            _shouldStop2 = false;
             _key2 = _idx2;
 
             _setKey2 = function _setKey2(newKey) {
               _key2 = newKey;
             };
 
-            _context.next = 27;
-            return callback(_value2, _idx2, _setKey2);
+            _stopExecution2 = function _stopExecution2() {
+              _shouldStop2 = true;
+            };
 
-          case 27:
+            _context.next = 33;
+            return callback(_value2, _idx2, _setKey2, _stopExecution2);
+
+          case 33:
             _res2 = _context.sent;
 
             if (accumulate) {
@@ -451,15 +482,22 @@ function _iterateAsync() {
               }
             }
 
-          case 29:
-            _i2++;
-            _context.next = 20;
-            break;
+            if (!_shouldStop2) {
+              _context.next = 37;
+              break;
+            }
 
-          case 32:
             return _context.abrupt("return", accumulate);
 
-          case 33:
+          case 37:
+            _i2++;
+            _context.next = 24;
+            break;
+
+          case 40:
+            return _context.abrupt("return", accumulate);
+
+          case 41:
           case "end":
             return _context.stop();
         }

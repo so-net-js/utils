@@ -12,25 +12,35 @@ function iterateSync(target, callback, accumulate) {
       let idx   = i;
       let value = target[i];
 
-      let key    = idx;
-      let setKey = (newKey) => {
+      let key        = idx;
+      let shouldStop = false;
+      let setKey     = (newKey) => {
         key = newKey;
       };
-      let res    = callback(value, idx, setKey);
+
+      let stopExecution = () => {
+        shouldStop = true;
+      };
+      let res           = callback(value, idx, setKey, stopExecution);
       if (accumulate) {
         accumulate[key] = res;
       }
+      if (shouldStop) return accumulate;
     }
   } else {
     let keys = Object.keys(target);
     for (let i = 0; i < keys.length; i++) {
-      let idx    = keys[i];
-      let value  = target[idx];
-      let key    = idx;
-      let setKey = (newKey) => {
+      let idx           = keys[i];
+      let value         = target[idx];
+      let key           = idx;
+      let shouldStop    = false;
+      let setKey        = (newKey) => {
         key = newKey;
       };
-      let res    = callback(value, idx, setKey);
+      let stopExecution = () => {
+        shouldStop = true;
+      };
+      let res           = callback(value, idx, setKey, stopExecution);
       if (accumulate) {
         if (Array.isArray(accumulate)) {
           accumulate[i] = res;
@@ -38,6 +48,7 @@ function iterateSync(target, callback, accumulate) {
           accumulate[key] = res;
         }
       }
+      if (shouldStop) return accumulate;
     }
   }
 
@@ -52,25 +63,34 @@ async function iterateAsync(target, callback, accumulate) {
       let idx   = i;
       let value = target[i];
 
-      let key    = idx;
-      let setKey = (newKey) => {
+      let key           = idx;
+      let shouldStop    = false;
+      let setKey        = (newKey) => {
         key = newKey;
       };
-      let res    = await callback(value, idx, setKey);
+      let stopExecution = () => {
+        shouldStop = true;
+      };
+      let res           = await callback(value, idx, setKey, stopExecution);
       if (accumulate) {
         accumulate[key] = res;
       }
+      if (shouldStop) return accumulate;
     }
   } else {
     let keys = Object.keys(target);
     for (let i = 0; i < keys.length; i++) {
-      let idx    = keys[i];
-      let value  = target[idx];
-      let key    = idx;
-      let setKey = (newKey) => {
+      let idx           = keys[i];
+      let value         = target[idx];
+      let shouldStop    = false;
+      let key           = idx;
+      let setKey        = (newKey) => {
         key = newKey;
       };
-      let res    = await callback(value, idx, setKey);
+      let stopExecution = () => {
+        shouldStop = true;
+      };
+      let res           = await callback(value, idx, setKey, stopExecution);
       if (accumulate) {
         if (Array.isArray(accumulate)) {
           accumulate[i] = res;
@@ -78,6 +98,7 @@ async function iterateAsync(target, callback, accumulate) {
           accumulate[key] = res;
         }
       }
+      if (shouldStop) return accumulate;
     }
   }
 
